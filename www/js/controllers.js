@@ -33,6 +33,21 @@ angular.module('starter.controllers', [])
       ]
     });
   };
+
+  $scope.showInformation = function(name, description) {
+
+     var alertPopup = $ionicPopup.alert({
+       title: 'Don\'t eat that!',
+       template: 'Name: '+name +'<br/>'+ 'Description: '+description
+     });
+
+     /*alertPopup.then(function(res) {
+       console.log('Thank you for not eating my delicious ice cream cone');
+     });*/
+
+  };
+
+
 })
 
 .controller('QuotesCtrl', function($scope, $http) {
