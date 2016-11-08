@@ -1,19 +1,51 @@
 angular.module('starter.controllers', [])
+//Criar um arquivo diferente para cada controller
+.controller('DashCtrl', function($scope, $ionicPopup, $cordovaSQLite) {
 
-.controller('DashCtrl', function($scope, $ionicPopup) {
+  $scope.insertSubject = function(name, description, status) {
+        var query = "INSERT INTO subject (name, description, status) VALUES (?,?,?)";
+        $cordovaSQLite.execute(db, query, [name, description, status]).then(function(res) {
+            alert("Registro inserido com sucesso: ID " + res.insertId);
+        }, function (err) {
+            alert(err);
+        });
+    }
+
+  $scope.selectAllSubjects = function() {
+        $scope.subjects = [];
+        var query = "SELECT * FROM subject";
+        $cordovaSQLite.execute(db, query).then(function(res) {
+          for(let i=0 ; i<res.rows.length ; i++){
+            $scope.subjects.push(res.rows.item(i));
+          }
+        }, function (err) {
+          alert(err);
+        });
+    }
+
+  $scope.onSubjectHold = function(id){
+    alert('ID '+ id);
+  }
 
   $scope.addSubject = function() {
-    var formTemplate = '<label>name:</label><input type="text" ng-model="data.name">'+
-    '<label>description:</label><input type="text" ng-model="data.description">'+
-    '<div class="button-bar">'+
-    '<ion-radio style="width:33.5%" ng-model="choice" ng-value="1"></ion-radio>'+
-    '<ion-radio style="width:33.5%" ng-model="choice" ng-value="2"></ion-radio>'+
-    '<ion-radio style="width:33.5%" ng-model="choice" ng-value="3"></ion-radio>'+
+    //extrair iss para um arquivo separado e usar templateUrl
+    var formTemplate = '<label>Name:</label><input type="text" ng-model="data.name">'+
+    '<label>Description:</label><input type="text" ng-model="data.description">'+
+    '<label>Status:</label><div class="button-bar" style="margin: 10px 0px 0px 0px;">'+
+    '<input type="radio" ng-model="data.status" ng-value="1" />'+
+    '<input type="radio" ng-model="data.status" ng-value="2"/>'+
+    '<input type="radio" ng-model="data.status" ng-value="3"/>'+
+    '</div><div class="button-bar text-center" style="margin: 10px 0px 0px 0px;">'+
+    '<label style="width:33.5%;">nice</label>'+
+    '<label style="width:33.5%;">not so nice</label>'+
+    '<label style="width:33.5%;">:/</label>'+
     '</div>';
-    $scope.data = {};
+    $scope.data = {
+      status:1
+    };
     var myPopup = $ionicPopup.show({
       template: formTemplate,
-      title: 'Enter Wi-Fi Password',
+      title: 'Enter subject data',
       subTitle: 'Please use normal things',
       scope: $scope,
       buttons: [
@@ -22,11 +54,17 @@ angular.module('starter.controllers', [])
           text: '<b>Save</b>',
           type: 'button-positive',
           onTap: function(e) {
-            if (!$scope.data.wifi) {
-              //don't allow the user to close unless he enters wifi password
+            if (!$scope.data.name) {
+              //don't allow the user to close unless he enters subject name
               e.preventDefault();
             } else {
-              return $scope.data.wifi;
+              var sub = {
+                name:$scope.data.name,
+                description:$scope.data.description?$scope.data.description:'',
+                status:$scope.data.status
+              }
+              $scope.insertSubject(sub.name, sub.description, sub.status);
+
             }
           }
         }

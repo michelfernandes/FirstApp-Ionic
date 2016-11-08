@@ -4,27 +4,18 @@
       <button ng-click="addSubject()" class="button button-block button-positive"> ADD SUBJECT </button>
     </div>
 
+    <div>database subjects:</div>
+
     <div>
-      <div class="card">
-        <div ng-click="teste()" class="item item-text-wrap item-subject border-top-success">
-          Programação I
-        </div>
+
+    <div class="card" ng-repeat="subject in subjects">
+      <div on-hold="onSubjectHold(subject.id)" ng-click="showInformation(subject.name,subject.description)" class="item item-text-wrap item-subject" ng-class="{'border-top-success': subject.status==1, 'border-top-warning': subject.status==2, 'border-top-error': subject.status==3}">
+        {{subject.name}}
       </div>
-      <div class="card">
-        <div ng-click="teste()" class="item item-text-wrap item-subject border-top-success">
-          Laboratório I
-        </div>
-      </div>
-      <div class="card">
-        <div class="item item-text-wrap item-subject border-top-warning">
-          Matemática para computação
-        </div>
-      </div>
-      <div class="card">
-        <div class="item item-text-wrap item-subject border-top-error">
-          Álgebra vetorial e matricial
-        </div>
-      </div>
+    </div>
+
+    <button  ng-click="selectAllSubjects();" on-hold="onSubjectHold()" > show data</button>
+
     </div>
 
   </ion-content>
