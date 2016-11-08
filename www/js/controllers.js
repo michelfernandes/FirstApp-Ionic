@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 //Criar um arquivo diferente para cada controller
-.controller('DashCtrl', function($scope, $ionicPopup, $cordovaSQLite) {
+.controller('DashCtrl', function($scope, $ionicPopup, $cordovaSQLite, $q) {
 
   $scope.insertSubject = function(name, description, status) {
         var query = "INSERT INTO subject (name, description, status) VALUES (?,?,?)";
@@ -11,7 +11,7 @@ angular.module('starter.controllers', [])
         });
     }
 
-  $scope.selectAllSubjects = function() {
+  var selectAllSubjects = function() {
         $scope.subjects = [];
         var query = "SELECT * FROM subject";
         $cordovaSQLite.execute(db, query).then(function(res) {
@@ -23,12 +23,16 @@ angular.module('starter.controllers', [])
         });
     }
 
+  $scope.subjects = [];
+  setTimeout(function(){
+    selectAllSubjects();
+  },1000)
   $scope.onSubjectHold = function(id){
     alert('ID '+ id);
   }
 
   $scope.addSubject = function() {
-    //extrair iss para um arquivo separado e usar templateUrl
+    //extrair isso para um arquivo separado e usar templateUrl
     var formTemplate = '<label>Name:</label><input type="text" ng-model="data.name">'+
     '<label>Description:</label><input type="text" ng-model="data.description">'+
     '<label>Status:</label><div class="button-bar" style="margin: 10px 0px 0px 0px;">'+
