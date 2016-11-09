@@ -1,54 +1,15 @@
 angular.module('starter.controllers', [])
 //Criar um arquivo diferente para cada controller
-.controller('DashCtrl', function($scope, $ionicPopup, $cordovaSQLite, $ionicLoading) {
+.controller('DashCtrl', function($scope, $ionicPopup, $cordovaSQLite, $ionicLoading, dataFactory) {
   var spinnerSettings = {
     template : '<ion-spinner></ion-spinner><p>Loading...</p>',
     noBackdrop : false
   };
 
-  var updateSubject = function(name, description, status, id){
-    var query = "UPDATE subject SET name = ?, description = ?, status = ? WHERE id = ?";
-    $ionicLoading.show(spinnerSettings);
-      $cordovaSQLite.execute(db, query, [name, description, status, id]).then(function(results) {
-        //alert('Subject successfully removed!');
-        $ionicLoading.hide();
-        selectAllSubjects();
-      }, function (err) {
-        $ionicLoading.hide();
-        alert(err);
-      });
-  }
-
-  var removeSubject = function(id){
-    var query = "DELETE FROM subject WHERE id = ?";
-      $cordovaSQLite.execute(db, query, [id]).then(function(results) {
-        //alert('Subject successfully removed!');
-        $ionicLoading.hide();
-        selectAllSubjects();
-      }, function (err) {
-        $ionicLoading.hide();
-        alert(err);
-      });
-  }
-
-  var insertSubject = function(name, description, status) {
-        var query = "INSERT INTO subject (name, description, status) VALUES (?,?,?)";
-        $ionicLoading.show(spinnerSettings);
-        $cordovaSQLite.execute(db, query, [name, description, status]).then(function(res) {
-          $ionicLoading.hide();
-            //alert("Subject successfully inserted: ID " + res.insertId);
-            selectAllSubjects();
-        }, function (err) {
-          $ionicLoading.hide();
-            alert(err);
-        });
-    }
-
-  var selectAllSubjects = function() {
+  var populateSubjects = function() {
         $scope.subjects = [];
-        var query = "SELECT * FROM subject";
         $ionicLoading.show(spinnerSettings);
-        $cordovaSQLite.execute(db, query).then(function(res) {
+        dataFactory.selectAllSubjects().then(function(res) {
           $ionicLoading.hide();
           for(let i=0 ; i<res.rows.length ; i++){
             $scope.subjects.push(res.rows.item(i));
@@ -61,7 +22,7 @@ angular.module('starter.controllers', [])
 
   $scope.subjects = [];
   setTimeout(function(){
-    selectAllSubjects();
+    populateSubjects();
   },1000)
 
   $scope.onEditClick = function(subject){
@@ -93,7 +54,15 @@ angular.module('starter.controllers', [])
                 description:$scope.data.description?$scope.data.description:'',
                 status:$scope.data.status
               }
-              updateSubject(sub.name, sub.description, sub.status, sub.id);
+
+              $ionicLoading.show(spinnerSettings);
+                dataFactory.updateSubject(sub.name, sub.description, sub.status, sub.id).then(function(results) {
+                  $ionicLoading.hide();
+                  populateSubjects();
+                }, function (err) {
+                  $ionicLoading.hide();
+                  alert(err);
+                });
 
             }
           }
@@ -112,7 +81,13 @@ angular.module('starter.controllers', [])
     deletePopup.then(function(res) {
       if(res) {
         $ionicLoading.show(spinnerSettings);
-        removeSubject(id);
+          dataFactory.deleteSubject(id).then(function(){
+            $ionicLoading.hide();
+            populateSubjects();
+          }, function (err) {
+            $ionicLoading.hide();
+            alert(err);
+          });
       }
     });
 
@@ -123,7 +98,7 @@ angular.module('starter.controllers', [])
     $scope.data = {
       status:1
     };
-    
+
     var myPopup = $ionicPopup.show({
       templateUrl: 'templates/subject-show.html',
       title: 'Enter subject data',
@@ -144,7 +119,15 @@ angular.module('starter.controllers', [])
                 description:$scope.data.description?$scope.data.description:'',
                 status:$scope.data.status
               }
-              insertSubject(sub.name, sub.description, sub.status);
+
+              $ionicLoading.show(spinnerSettings);
+              dataFactory.insertSubject(sub.name, sub.description, sub.status).then(function(res) {
+                $ionicLoading.hide();
+                  populateSubjects();
+              }, function (err) {
+                $ionicLoading.hide();
+                  alert(err);
+              });
 
             }
           }
