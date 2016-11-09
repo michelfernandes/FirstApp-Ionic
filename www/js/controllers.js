@@ -1,23 +1,32 @@
 angular.module('starter.controllers', [])
 //Criar um arquivo diferente para cada controller
-.controller('DashCtrl', function($scope, $ionicPopup, $cordovaSQLite, $q) {
+.controller('DashCtrl', function($scope, $ionicPopup, $cordovaSQLite, $ionicLoading) {
+  var spinnerSettings = {
+    template : '<ion-spinner></ion-spinner><p>Loading...</p>',
+    noBackdrop : false
+  };
 
   $scope.removeSubject = function(id){
     var query = "DELETE FROM subject WHERE id = ?";
       $cordovaSQLite.execute(db, query, [id]).then(function(results) {
-          //alert('Subject successfully removed!');
-          selectAllSubjects();
+        //alert('Subject successfully removed!');
+        $ionicLoading.hide();
+        selectAllSubjects();
       }, function (err) {
-          alert(err);
+        $ionicLoading.hide();
+        alert(err);
       });
   }
 
   $scope.insertSubject = function(name, description, status) {
         var query = "INSERT INTO subject (name, description, status) VALUES (?,?,?)";
+        $ionicLoading.show(spinnerSettings);
         $cordovaSQLite.execute(db, query, [name, description, status]).then(function(res) {
+          $ionicLoading.hide();
             //alert("Subject successfully inserted: ID " + res.insertId);
             selectAllSubjects();
         }, function (err) {
+          $ionicLoading.hide();
             alert(err);
         });
     }
@@ -25,11 +34,14 @@ angular.module('starter.controllers', [])
   var selectAllSubjects = function() {
         $scope.subjects = [];
         var query = "SELECT * FROM subject";
+        $ionicLoading.show(spinnerSettings);
         $cordovaSQLite.execute(db, query).then(function(res) {
+          $ionicLoading.hide();
           for(let i=0 ; i<res.rows.length ; i++){
             $scope.subjects.push(res.rows.item(i));
           }
         }, function (err) {
+          $ionicLoading.hide();
           alert(err);
         });
     }
@@ -49,6 +61,7 @@ angular.module('starter.controllers', [])
     confirmPopup.then(function(res) {
       if(res) {
         $scope.removeSubject(id);
+        $ionicLoading.show(spinnerSettings);
       }
     });
 
