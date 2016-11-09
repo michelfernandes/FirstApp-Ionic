@@ -6,7 +6,20 @@ angular.module('starter.controllers', [])
     noBackdrop : false
   };
 
-  $scope.removeSubject = function(id){
+  var updateSubject = function(name, description, status, id){
+    var query = "UPDATE subject SET name = ?, description = ?, status = ? WHERE id = ?";
+    $ionicLoading.show(spinnerSettings);
+      $cordovaSQLite.execute(db, query, [name, description, status, id]).then(function(results) {
+        //alert('Subject successfully removed!');
+        $ionicLoading.hide();
+        selectAllSubjects();
+      }, function (err) {
+        $ionicLoading.hide();
+        alert(err);
+      });
+  }
+
+  var removeSubject = function(id){
     var query = "DELETE FROM subject WHERE id = ?";
       $cordovaSQLite.execute(db, query, [id]).then(function(results) {
         //alert('Subject successfully removed!');
@@ -18,7 +31,7 @@ angular.module('starter.controllers', [])
       });
   }
 
-  $scope.insertSubject = function(name, description, status) {
+  var insertSubject = function(name, description, status) {
         var query = "INSERT INTO subject (name, description, status) VALUES (?,?,?)";
         $ionicLoading.show(spinnerSettings);
         $cordovaSQLite.execute(db, query, [name, description, status]).then(function(res) {
@@ -51,17 +64,67 @@ angular.module('starter.controllers', [])
     selectAllSubjects();
   },1000)
 
+  $scope.onEditClick = function(subject){
+
+    $scope.data = {
+      id:subject.id,
+      name:subject.name,
+      description:subject.description,
+      status:subject.status
+    };
+
+    var formTemplate = '<label>Name:</label><input type="text" ng-model="data.name">'+
+    '<label>Description:</label><input type="text" ng-model="data.description">'+
+    '<label>Status:</label><div class="button-bar" style="margin: 10px 0px 0px 0px;">'+
+    '<input type="radio" ng-model="data.status" ng-value="1" />'+
+    '<input type="radio" ng-model="data.status" ng-value="2"/>'+
+    '<input type="radio" ng-model="data.status" ng-value="3"/>'+
+    '</div><div class="button-bar text-center" style="margin: 10px 0px 0px 0px;">'+
+    '<label style="width:33.5%;">:)</label>'+
+    '<label style="width:33.5%;">:|</label>'+
+    '<label style="width:33.5%;">:(</label>'+
+    '</div>';
+
+    var editPopup = $ionicPopup.show({
+      template: formTemplate,
+      title: 'Enter subject data',
+      scope: $scope,
+      buttons: [
+        { text: 'Cancel' },
+        {
+          text: '<b>Save</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            if (!$scope.data.name) {
+              //don't allow the user to close unless he enters subject name
+              e.preventDefault();
+            } else {
+              var sub = {
+                id:$scope.data.id,
+                name:$scope.data.name,
+                description:$scope.data.description?$scope.data.description:'',
+                status:$scope.data.status
+              }
+              updateSubject(sub.name, sub.description, sub.status, sub.id);
+
+            }
+          }
+        }
+      ]
+    });
+  }
+
   $scope.onDeleteClick = function(id){
-    var confirmPopup = $ionicPopup.confirm({
-      title: 'Consume Ice Cream',
+    var deletePopup = $ionicPopup.confirm({
+      title: 'Delete',
       template: 'Are you sure you want to delete this subject?',
       okType: 'button-assertive'
     });
 
-    confirmPopup.then(function(res) {
+    deletePopup.then(function(res) {
       if(res) {
-        $scope.removeSubject(id);
         $ionicLoading.show(spinnerSettings);
+        removeSubject(id);
       }
     });
 
@@ -91,7 +154,7 @@ angular.module('starter.controllers', [])
       buttons: [
         { text: 'Cancel' },
         {
-          text: '<b>Save</b>',
+          text: '<b>Create</b>',
           type: 'button-positive',
           onTap: function(e) {
             if (!$scope.data.name) {
@@ -103,7 +166,7 @@ angular.module('starter.controllers', [])
                 description:$scope.data.description?$scope.data.description:'',
                 status:$scope.data.status
               }
-              $scope.insertSubject(sub.name, sub.description, sub.status);
+              insertSubject(sub.name, sub.description, sub.status);
 
             }
           }

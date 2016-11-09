@@ -6,7 +6,6 @@
 
     <div>
 
-
       <ion-list>
         <ion-item ng-repeat="subject in subjects"
         ng-click="showInformation(subject.name,subject.description)"
@@ -15,7 +14,7 @@
 
         {{subject.name}}
 
-        <ion-option-button class="button-positive">Edit</ion-option-button>
+        <ion-option-button ng-click="onEditClick(subject)" class="button-positive">Edit</ion-option-button>
         <ion-option-button ng-click="onDeleteClick(subject.id)" class="button-assertive">Delete</ion-option-button>
 
         </ion-item>
