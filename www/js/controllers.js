@@ -2,10 +2,21 @@ angular.module('starter.controllers', [])
 //Criar um arquivo diferente para cada controller
 .controller('DashCtrl', function($scope, $ionicPopup, $cordovaSQLite, $q) {
 
+  $scope.removeSubject = function(id){
+    var query = "DELETE FROM subject WHERE id = ?";
+      $cordovaSQLite.execute(db, query, [id]).then(function(results) {
+          alert('Subject successfully removed!');
+          selectAllSubjects();
+      }, function (err) {
+          alert(err);
+      });
+  }
+
   $scope.insertSubject = function(name, description, status) {
         var query = "INSERT INTO subject (name, description, status) VALUES (?,?,?)";
         $cordovaSQLite.execute(db, query, [name, description, status]).then(function(res) {
-            alert("Registro inserido com sucesso: ID " + res.insertId);
+            alert("Subject successfully inserted: ID " + res.insertId);
+            selectAllSubjects();
         }, function (err) {
             alert(err);
         });
@@ -27,8 +38,20 @@ angular.module('starter.controllers', [])
   setTimeout(function(){
     selectAllSubjects();
   },1000)
+
   $scope.onSubjectHold = function(id){
-    alert('ID '+ id);
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'Consume Ice Cream',
+      template: 'Are you sure you want to delete this subject?',
+      okType: 'button-assertive'
+    });
+
+    confirmPopup.then(function(res) {
+      if(res) {
+        $scope.removeSubject(id);
+      }
+    });
+
   }
 
   $scope.addSubject = function() {
