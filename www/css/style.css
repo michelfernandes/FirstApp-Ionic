@@ -7,8 +7,9 @@
 .border-top-error{
   border-top: solid 5px #ef473a !important;
 }
-.card .item-subject{
-  height: 60px;
+.item-subject{
+  border-radius: 5px;
+  margin: 20px 5px;
 }
 .body-quote{
   position:absolute;

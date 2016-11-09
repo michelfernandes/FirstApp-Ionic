@@ -5,7 +5,7 @@ angular.module('starter.controllers', [])
   $scope.removeSubject = function(id){
     var query = "DELETE FROM subject WHERE id = ?";
       $cordovaSQLite.execute(db, query, [id]).then(function(results) {
-          alert('Subject successfully removed!');
+          //alert('Subject successfully removed!');
           selectAllSubjects();
       }, function (err) {
           alert(err);
@@ -15,7 +15,7 @@ angular.module('starter.controllers', [])
   $scope.insertSubject = function(name, description, status) {
         var query = "INSERT INTO subject (name, description, status) VALUES (?,?,?)";
         $cordovaSQLite.execute(db, query, [name, description, status]).then(function(res) {
-            alert("Subject successfully inserted: ID " + res.insertId);
+            //alert("Subject successfully inserted: ID " + res.insertId);
             selectAllSubjects();
         }, function (err) {
             alert(err);
@@ -39,7 +39,7 @@ angular.module('starter.controllers', [])
     selectAllSubjects();
   },1000)
 
-  $scope.onSubjectHold = function(id){
+  $scope.onDeleteClick = function(id){
     var confirmPopup = $ionicPopup.confirm({
       title: 'Consume Ice Cream',
       template: 'Are you sure you want to delete this subject?',

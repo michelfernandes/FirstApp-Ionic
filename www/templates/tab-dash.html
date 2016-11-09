@@ -6,11 +6,20 @@
 
     <div>
 
-    <div class="card" ng-repeat="subject in subjects">
-      <div on-hold="onSubjectHold(subject.id)" ng-click="showInformation(subject.name,subject.description)" class="item item-text-wrap item-subject" ng-class="{'border-top-success': subject.status==1, 'border-top-warning': subject.status==2, 'border-top-error': subject.status==3}">
+
+      <ion-list>
+        <ion-item ng-repeat="subject in subjects"
+        ng-click="showInformation(subject.name,subject.description)"
+        class="item item-text-wrap item-subject"
+        ng-class="{'border-top-success': subject.status==1, 'border-top-warning': subject.status==2, 'border-top-error': subject.status==3}">
+
         {{subject.name}}
-      </div>
-    </div>
+
+        <ion-option-button class="button-positive">Edit</ion-option-button>
+        <ion-option-button ng-click="onDeleteClick(subject.id)" class="button-assertive">Delete</ion-option-button>
+
+        </ion-item>
+      </ion-list>
 
     </div>
 
