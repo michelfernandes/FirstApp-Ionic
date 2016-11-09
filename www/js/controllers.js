@@ -73,20 +73,8 @@ angular.module('starter.controllers', [])
       status:subject.status
     };
 
-    var formTemplate = '<label>Name:</label><input type="text" ng-model="data.name">'+
-    '<label>Description:</label><input type="text" ng-model="data.description">'+
-    '<label>Status:</label><div class="button-bar" style="margin: 10px 0px 0px 0px;">'+
-    '<input type="radio" ng-model="data.status" ng-value="1" />'+
-    '<input type="radio" ng-model="data.status" ng-value="2"/>'+
-    '<input type="radio" ng-model="data.status" ng-value="3"/>'+
-    '</div><div class="button-bar text-center" style="margin: 10px 0px 0px 0px;">'+
-    '<label style="width:33.5%;">:)</label>'+
-    '<label style="width:33.5%;">:|</label>'+
-    '<label style="width:33.5%;">:(</label>'+
-    '</div>';
-
     var editPopup = $ionicPopup.show({
-      template: formTemplate,
+      templateUrl: 'templates/subject-show.html',
       title: 'Enter subject data',
       scope: $scope,
       buttons: [
@@ -131,23 +119,13 @@ angular.module('starter.controllers', [])
   }
 
   $scope.addSubject = function() {
-    //extrair isso para um arquivo separado e usar templateUrl
-    var formTemplate = '<label>Name:</label><input type="text" ng-model="data.name">'+
-    '<label>Description:</label><input type="text" ng-model="data.description">'+
-    '<label>Status:</label><div class="button-bar" style="margin: 10px 0px 0px 0px;">'+
-    '<input type="radio" ng-model="data.status" ng-value="1" />'+
-    '<input type="radio" ng-model="data.status" ng-value="2"/>'+
-    '<input type="radio" ng-model="data.status" ng-value="3"/>'+
-    '</div><div class="button-bar text-center" style="margin: 10px 0px 0px 0px;">'+
-    '<label style="width:33.5%;">nice</label>'+
-    '<label style="width:33.5%;">not so nice</label>'+
-    '<label style="width:33.5%;">:/</label>'+
-    '</div>';
+
     $scope.data = {
       status:1
     };
+    
     var myPopup = $ionicPopup.show({
-      template: formTemplate,
+      templateUrl: 'templates/subject-show.html',
       title: 'Enter subject data',
       subTitle: 'Please use normal things',
       scope: $scope,
