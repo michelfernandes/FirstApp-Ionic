@@ -22,7 +22,6 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers'])
       StatusBar.styleDefault();
     }
     db = $cordovaSQLite.openDB({ name: 'my.db', location:'default' });
-    $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS people (id integer primary key, firstname text, lastname text)");
     $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS subject (id integer primary key, name text, description text, status integer)");
   });
 })
@@ -60,16 +59,6 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers'])
       'tab-quotes':{
         templateUrl: 'templates/tab-quotes.html',
         controller: 'QuotesCtrl'
-      }
-    }
-  })
-
-  .state('tab.database',{
-    url: '/database',
-    views:{
-      'tab-database':{
-        templateUrl: 'templates/tab-database.html',
-        controller: 'DatabaseCtrl'
       }
     }
   })
