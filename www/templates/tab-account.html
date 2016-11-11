@@ -7,10 +7,10 @@
         </ion-toggle>
       </ion-item>
       <ion-item>
-        <div>Volume: {{volume}}%</div>
+        <div>Volume: {{settings.volume}}%</div>
         <div class="item range">
           <i class="icon ion-volume-low"></i>
-          <input ng-init="volume=50" type="range" ng-model="volume" name="volume">
+          <input type="range" ng-model="settings.volume" name="volume">
           <i class="icon ion-volume-high"></i>
         </div>
       </ion-item>
